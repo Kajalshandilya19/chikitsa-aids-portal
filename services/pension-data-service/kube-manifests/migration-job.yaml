@@ -1,0 +1,36 @@
+# Runs this service's pending migrations BEFORE a rollout. Images never migrate at boot (rule R-DB-6).
+#   kubectl -n hiv-pension delete job pension-data-service-migrate --ignore-not-found
+#   kubectl apply -f kube-manifests/migration-job.yaml && kubectl -n hiv-pension wait --for=condition=complete job/pension-data-service-migrate
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pension-data-service-migrate
+  namespace: hiv-pension
+  labels: { app: pension-data-service, component: migration }
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 1
+  template:
+    metadata:
+      labels: { app: pension-data-service, component: migration }
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      containers:
+        - name: migrate
+          image: REGISTRY/pension-data-service:TAG
+          command: ["node", "dist/dev/migrate.js", "run"]
+          envFrom:
+            - secretRef: { name: pension-common }
+            - secretRef: { name: pension-data }
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: DB_ALLOW_MIGRATIONS, value: "true" }
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }

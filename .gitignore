@@ -1,0 +1,25 @@
+node_modules/
+dist/
+coverage/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Generated env files carry real secrets. Only the *.example files are committed.
+env/*.env
+!env/*.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local runtime state (DB dumps, uploads, logs, pids). May contain PII: never commit.
+.data/
+.logs/
+.run/
+
+.DS_Store
+*.log
+
+# Database dump shipped with the zip (synthetic data). Never commit it.
+db-dump/

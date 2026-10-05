@@ -1,0 +1,40 @@
+/**
+ * Audit actions offered in the Audit Log filter. A convenience list only: the source of truth is
+ * `AUDIT` in services/pension-auth-service/src/lib/audit.ts (docs/AUDIT_EVENTS.md). An action
+ * missing here can still be found by clearing the filter.
+ */
+export const AUDIT_ACTIONS: readonly string[] = [
+  "auth.login.success",
+  "auth.login.failure",
+  "auth.login.locked",
+  "auth.mfa.enrolled",
+  "auth.mfa.failure",
+  "auth.session.logout",
+  "auth.session.switch",
+  "auth.session.replay_detected",
+  "auth.password.changed",
+  "auth.password.reset_requested",
+  "auth.password.reset_done",
+  "auth.password.reset_by_admin",
+  "auth.user.created",
+  "auth.user.updated",
+  "auth.user.activated",
+  "auth.user.deactivated",
+  "auth.user.unlocked",
+  "auth.assignment.added",
+  "auth.assignment.removed",
+  "auth.role.permissions_changed",
+  "auth.district.updated",
+  "auth.center.created",
+  "auth.center.updated",
+  "auth.center.activated",
+  "auth.center.deactivated",
+  "auth.center.imported",
+  "auth.audit.chain_verified",
+  "data.import.uploaded",
+  "data.import.committed",
+  "data.import.cancelled",
+  "data.import.file_rejected",
+  "data.export.created",
+  "data.export.downloaded",
+];

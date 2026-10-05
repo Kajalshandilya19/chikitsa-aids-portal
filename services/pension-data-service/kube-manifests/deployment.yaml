@@ -1,0 +1,58 @@
+# pension-data-service: Deployment + ClusterIP Service. Apply AFTER the migration Job has succeeded
+# (docs/DEPLOYMENT.md). Secrets: pension-common (shared keys) + pension-data (this service's DB login).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pension-data-service
+  namespace: hiv-pension
+  labels: { app: pension-data-service, tier: backend }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: pension-data-service }
+  template:
+    metadata:
+      labels: { app: pension-data-service, tier: backend }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: pension-data-service
+          image: REGISTRY/pension-data-service:TAG
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3203
+          envFrom:
+            - secretRef: { name: pension-common }
+            - secretRef: { name: pension-data }
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: PORT, value: "3203" }
+          readinessProbe:
+            httpGet: { path: /health/ready, port: 3203 }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 3203 }
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { cpu: 500m, memory: 768Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pension-data-service
+  namespace: hiv-pension
+spec:
+  type: ClusterIP
+  selector: { app: pension-data-service }
+  ports:
+    - { protocol: TCP, port: 80, targetPort: 3203 }

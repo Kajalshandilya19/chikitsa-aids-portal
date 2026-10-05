@@ -1,0 +1,26 @@
+# Public entry: TLS only, the web app only. The backend services have no Ingress.
+# The controller must OVERWRITE a client-sent X-Forwarded-For (ingress-nginx: use-forwarded-headers
+# false, the default), because the BFF forwards its first hop to the services for per-user rate limits.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pension-web
+  namespace: hiv-pension
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "11m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-secure: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: ["PENSION_HOST"]
+      secretName: pension-web-tls
+  rules:
+    - host: PENSION_HOST
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service: { name: pension-web, port: { number: 80 } }

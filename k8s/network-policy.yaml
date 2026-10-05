@@ -1,0 +1,45 @@
+# Who may talk to whom inside the hiv-pension namespace (docs/SECURITY.md S-NET-1).
+#   web (BFF)  -> auth, core, data
+#   core, data -> auth            (internal calls: permissions, masters, Center upsert)
+#   data       -> core            (Phase 1: SOCH beneficiary upsert)
+# Nothing else reaches a backend service. Egress to Postgres/Redis/MinIO is left to the cluster's
+# default policy; tighten it with the infra team once their addresses are fixed.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-ingress
+  namespace: hiv-pension
+spec:
+  podSelector:
+    matchLabels: { tier: backend }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: pension-web } }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: auth-from-siblings
+  namespace: hiv-pension
+spec:
+  podSelector:
+    matchLabels: { app: pension-auth-service }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: pension-core-service } }
+        - podSelector: { matchLabels: { app: pension-data-service } }
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: core-from-data
+  namespace: hiv-pension
+spec:
+  podSelector:
+    matchLabels: { app: pension-core-service }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector: { matchLabels: { app: pension-data-service } }

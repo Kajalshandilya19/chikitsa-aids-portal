@@ -1,0 +1,65 @@
+# pension-web: the only component exposed to users (through the Ingress). Secrets: pension-common
+# (service URLs, WEB_ORIGIN, COOKIE_SECURE, APP_ENV). It needs no database or key material.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pension-web
+  namespace: hiv-pension
+  labels: { app: pension-web, tier: web }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: pension-web }
+  template:
+    metadata:
+      labels: { app: pension-web, tier: web }
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: pension-web
+          image: REGISTRY/pension-web:TAG
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3200
+          envFrom:
+            - secretRef: { name: pension-common }
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: PORT, value: "3200" }
+          readinessProbe:
+            httpGet: { path: /robots.txt, port: 3200 }
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /robots.txt, port: 3200 }
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits: { cpu: 1000m, memory: 768Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: next-cache, mountPath: /app/.next/cache }
+      volumes:
+        - name: next-cache
+          emptyDir: { sizeLimit: 256Mi }
+---
+# Session affinity keeps a browser on one replica: refresh-token rotation is single-flight per
+# process, so two replicas rotating the same token at once would look like a replay (README "Decisions").
+apiVersion: v1
+kind: Service
+metadata:
+  name: pension-web
+  namespace: hiv-pension
+spec:
+  type: ClusterIP
+  selector: { app: pension-web }
+  sessionAffinity: ClientIP
+  ports:
+    - { protocol: TCP, port: 80, targetPort: 3200 }

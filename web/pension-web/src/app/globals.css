@@ -1,0 +1,945 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* SETU domain tokens: triage and referral status */
+  --color-triage-red: var(--triage-red);
+  --color-triage-yellow: var(--triage-yellow);
+  --color-triage-green: var(--triage-green);
+  --color-triage-black: var(--triage-black);
+  --color-status-pending: var(--status-pending);
+  --color-status-accepted: var(--status-accepted);
+  --color-status-ready: var(--status-ready);
+  --color-status-transit: var(--status-transit);
+  --color-status-completed: var(--status-completed);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-transferred: var(--status-transferred);
+  --color-status-muted: var(--status-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-triage-red-muted: var(--triage-red-muted);
+  --color-triage-yellow-muted: var(--triage-yellow-muted);
+  --color-triage-green-muted: var(--triage-green-muted);
+  --color-triage-black-muted: var(--triage-black-muted);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+  /* Headings (dialog/sheet/drawer/card titles) use the default sans, not the
+     brand serif, the serif stays opt-in via the explicit .font-display class. */
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-info: var(--info);
+  --color-info-muted: var(--info-muted);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-row-hover: var(--row-hover);
+  --color-row-marked: var(--row-marked);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ───────────────────────────────────────────────────────────────────────
+   Chikitsa-Raj theme, "Rang-e-Rajasthan", clean-light edition
+   A crisp, high-visibility light UI on an absolute-white canvas with a warm
+   neutral (stone) grey scale for surfaces and hairline borders, keeping the
+   the red ribbon crimson (HIV/AIDS awareness) as the brand accent (primary, ring, active
+   nav) and peacock-teal / marigold for data. Hex tokens work on every
+   browser; modifiers like bg-primary/10 use color-mix, see the @supports
+   fallbacks near the bottom.
+   ─────────────────────────────────────────────────────────────────────── */
+:root {
+  --background: #ffffff; /* absolute white canvas */
+  --foreground: #1c1917; /* stone-900 ink, high contrast */
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #c8102e; /* red ribbon crimson: the HIV/AIDS awareness red */
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f4; /* stone-100 surface */
+  --secondary-foreground: #292524; /* stone-800 */
+  --muted: #f5f5f4; /* stone-100 */
+  --muted-foreground: #78716c; /* stone-500, AA on white */
+  --accent: #fdecee; /* soft crimson hover tint */
+  --accent-foreground: #9b0d23; /* deep crimson */
+  --destructive: #dc2626;
+  /* Informational notices (imported-from, review prompts). */
+  --info: #1d4ed8;
+  --info-muted: #eff6ff;
+  --border: #e7e5e4; /* stone-200 hairline */
+  --input: #e7e5e4;
+  --ring: #c8102e;
+  --chart-1: #c8102e; /* crimson */
+  --chart-2: #e9a100; /* marigold */
+  --chart-3: #0f766e; /* peacock teal */
+  --chart-4: #b45309; /* amber-brown */
+  --chart-5: #9d174d; /* jaipur pink */
+  --radius: 0.5rem;
+  --sidebar: #fafaf9; /* stone-50, subtly off-white for separation */
+  --sidebar-foreground: #1c1917;
+  --sidebar-primary: #c8102e; /* crimson active */
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f4; /* stone-100 hover */
+  --sidebar-accent-foreground: #292524;
+  --sidebar-border: #e7e5e4; /* stone-200 */
+  --sidebar-ring: #c8102e;
+
+  /* ── Table row states ───────────────────────────────────────────────────
+     The hover and "arrived here from a finding" tints, as OPAQUE colours.
+
+     They were `bg-muted/50` and `bg-primary/5`, and the pinned actions column
+     takes the row's own background with `bg-inherit`, so on hover that column
+     went 50% transparent and the Department text scrolled visibly underneath
+     the actions button. Same reasoning as the table accents below: a flat hex,
+     not an opacity modifier, because a pinned cell has to actually cover what
+     passes behind it. The rendered colour is unchanged; only its alpha is. */
+  --row-hover: #fafafa;
+  --row-marked: #fdf4f5;
+
+  /* ── Table accents ──────────────────────────────────────────────────────
+     A colour a form designer can put on a table so a chart of four grids
+     reads as four grids. Paper nursing charts do this with printed rules;
+     on screen every table is the same grey and a nurse scrolling a long
+     form loses which one they are in.
+
+     Written as flat hexes rather than an opacity modifier on an existing
+     token, because `bg-x/10` needs color-mix() and falls back to SOLID on
+     browsers without it, a black header row, not a tinted one.
+
+     `tint` is the header fill, `ink` the header text (AA on the tint), and
+     `line` the rule under it. */
+  --table-teal-tint: #ddf0ec;
+  --table-teal-head: #c2e5dc;
+  --table-teal-edge: #a4d6ca;
+  --table-amber-tint: #fbefd7;
+  --table-amber-head: #f5e0b4;
+  --table-amber-edge: #ead194;
+  --table-rose-tint: #fbe5ed;
+  --table-rose-head: #f5cddc;
+  --table-rose-edge: #edb4c7;
+  --table-indigo-tint: #e5e8f8;
+  --table-indigo-head: #d1d6f1;
+  --table-indigo-edge: #b9c0e7;
+  --table-green-tint: #ddefe2;
+  --table-green-head: #c2e2ca;
+  --table-green-edge: #a5d3b1;
+  --table-terracotta-tint: #f9e3d2;
+  --table-terracotta-head: #f3ccb2;
+  --table-terracotta-edge: #e9b591;
+}
+
+.dark {
+  --background: #160d0f;
+  --foreground: #f6e8ea;
+  --card: #1f1316;
+  --card-foreground: #f6e8ea;
+  --popover: #1b1013;
+  --popover-foreground: #f6e8ea;
+  --primary: #f0566b; /* lighter crimson for dark */
+  --primary-foreground: #1f0306;
+  --secondary: #2a191d;
+  --secondary-foreground: #f6e8ea;
+  --muted: #28171b;
+  --row-hover: #241518;
+  --row-marked: #2b161b;
+  --muted-foreground: #c19aa2;
+  --accent: #3a1219;
+  --accent-foreground: #fda4af;
+  --destructive: #ef4444;
+  --info: #93c5fd;
+  --info-muted: #172554;
+  --border: #3a2328;
+  --input: #3f262c;
+  --ring: #f0566b;
+  --chart-1: #f0566b;
+  --chart-2: #e9a100;
+  --chart-3: #2dd4bf;
+  --chart-4: #f59e0b;
+  --chart-5: #fb7185;
+  --sidebar: #1d1114; /* dark wine surface */
+  --sidebar-foreground: #f6e8ea;
+  --sidebar-primary: #f0566b;
+  --sidebar-primary-foreground: #1f0306;
+  --sidebar-accent: #331c21;
+  --sidebar-accent-foreground: #fda4af;
+  --sidebar-border: #3a2328;
+  --sidebar-ring: #f0566b;
+
+  /* Table accents, dark. The tints are dark surfaces and the ink is the light
+     end of each hue, so the pairing inverts rather than dimming, a pale tint
+     on a dark page glares, and dark ink on it is unreadable. */
+  --table-teal-tint: #183a35;
+  --table-teal-head: #215048;
+  --table-teal-edge: #2c665c;
+  --table-amber-tint: #3a2d13;
+  --table-amber-head: #4e3d1a;
+  --table-amber-edge: #644e22;
+  --table-rose-tint: #3b1c28;
+  --table-rose-head: #502537;
+  --table-rose-edge: #663048;
+  --table-indigo-tint: #232645;
+  --table-indigo-head: #30345e;
+  --table-indigo-edge: #3e4478;
+  --table-green-tint: #1a3a24;
+  --table-green-head: #244f31;
+  --table-green-edge: #2f6540;
+  --table-terracotta-tint: #3c2a1a;
+  --table-terracotta-head: #523924;
+  --table-terracotta-edge: #68492e;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Serif display for brand/headings (var set by next/font in layout.tsx). */
+.font-display {
+  font-family: var(--font-serif), var(--font-sans), Georgia, serif;
+}
+
+/* ── Login hero band (care_fe / V2 style, top-anchored) ─────────────────
+   A brand-tinted band across the top of the login page with an animated
+   wave overlay. The band's base colour comes from a Tailwind bg-* class on
+   the element; `wave_scene_square.png` is blended over it (luminosity) so it
+   adopts the brand hue, and `wave_top_2.png` rides the bottom edge as the
+   wave. The white area BELOW the band carries the .login-dots pattern. */
+.login-hero-top {
+  overflow: hidden;
+  /* Band colour follows the custom theme's primary, kept light so it blends
+     with the pastel skyline at the page bottom. Fallback first for browsers
+     without color-mix(). Dark mode deepens it (see .dark override below). */
+  background-color: #d97848;
+  background-color: color-mix(in srgb, var(--primary) 72%, white);
+  /* White-wash layer on top: the luminosity blend takes its lightness from
+     the scene image, so lightening the base colour alone has no effect. */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.28)),
+    url("/images/wave_scene_square.png");
+  background-size: 130%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: normal, luminosity;
+  animation: herobg 30s linear infinite alternate-reverse;
+}
+@keyframes herobg {
+  0% { background-size: 110%; }
+  100% { background-size: 200%; }
+}
+.dark .login-hero-top {
+  background-color: #8a2b16;
+  background-color: color-mix(in srgb, var(--primary) 70%, black);
+  /* No white-wash in dark, keep the deep band. */
+  background-image: url("/images/wave_scene_square.png");
+  background-blend-mode: luminosity;
+}
+.login-hero-top::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 260px;
+  z-index: 2;
+  background-image: url("/images/wave_top_2.png");
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-size: auto 100%;
+  animation: wave-h 120s linear infinite alternate-reverse;
+  filter: drop-shadow(0 -20px 18px rgba(34, 34, 34, 0.1));
+  pointer-events: none;
+}
+@keyframes wave-h {
+  0% { background-position: left top; }
+  100% { background-position: right top; }
+}
+@media screen and (max-width: 768px) {
+  .login-hero-top::before { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-hero-top,
+  .login-hero-top::before,
+  .dark .login-hero-top::before { animation: none; }
+}
+
+/* Dark mode: the wave artwork is white, repaint the strip as a mask filled
+   with the page background token so the band edge blends in both themes.
+   Browsers without mask support just get a clean band edge instead. */
+.dark .login-hero-top::before {
+  display: none;
+}
+@supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+  .dark .login-hero-top::before {
+    display: block;
+    background-image: none;
+    background-color: var(--background);
+    -webkit-mask-image: url("/images/wave_top_2.png");
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: left top;
+    -webkit-mask-size: auto 100%;
+    mask-image: url("/images/wave_top_2.png");
+    mask-repeat: no-repeat;
+    mask-position: left top;
+    mask-size: auto 100%;
+    animation: wave-mask-h 120s linear infinite alternate-reverse;
+  }
+}
+@keyframes wave-mask-h {
+  0% { -webkit-mask-position: left top; mask-position: left top; }
+  100% { -webkit-mask-position: right top; mask-position: right top; }
+}
+
+/* Dotted "jharokha" pattern for the white area beneath the hero band. */
+.login-dots {
+  /* Dot colour follows the theme primary. Fallback rgba first. */
+  background-image: radial-gradient(rgba(194, 65, 12, 0.16) 1.25px, transparent 1.25px);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--primary) 16%, transparent) 1.25px,
+    transparent 1.25px
+  );
+  background-size: 20px 20px;
+  background-position: -8px -8px;
+}
+
+/* Bottom-pinned Rajasthan skyline illustration: fade its top edge into the
+   page. Browsers without mask support just show a hard edge (acceptable). */
+.login-illustration {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 45%);
+  mask-image: linear-gradient(to bottom, transparent, black 45%);
+}
+
+/* Short-and-wide desktop viewports (e.g. a laptop where browser chrome eats the
+   height): compact the login card so it fits without a scrollbar. The map + orbit
+   ring already shrink via min(px, svh); here we trim the outer/column padding and
+   the form's vertical rhythm. Normal-height desktops (>820px) are untouched. */
+@media (min-width: 1024px) and (max-height: 820px) {
+  .login-shell {
+    padding-top: 1.25rem;
+    padding-bottom: 2.5rem;
+  }
+  .login-shell > div > * {
+    padding: 1.5rem;
+  }
+  .login-form > div:not(:first-child):not(:last-child) {
+    margin-top: 1rem;
+  }
+  .login-form > div:last-child {
+    padding-top: 1.25rem;
+  }
+}
+
+/* Slow sheen sweep across the login map, a skewed gradient bar clipped to
+   the state outline. Sweeps ~1.6s then rests; rare + slow reads premium. */
+@keyframes login-sheen {
+  0% { transform: translateX(-240px) skewX(-12deg); }
+  18%, 100% { transform: translateX(660px) skewX(-12deg); }
+}
+.login-map-sheen {
+  animation: login-sheen 9s ease-in-out 1.6s infinite;
+}
+
+/* Full-page dotted backdrop for the login: fades out before the skyline
+   illustration so the two never fight, and drifts one tile per loop
+   (20px grid → seamless). */
+.login-dots-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 35%, transparent 78%);
+  mask-image: linear-gradient(to bottom, black 35%, transparent 78%);
+}
+@keyframes login-dots-drift {
+  from { background-position: -8px -8px; }
+  to { background-position: 12px 12px; }
+}
+.login-dots-anim {
+  animation: login-dots-drift 26s linear infinite;
+}
+
+/* Capability chips orbit the dashed ring like electrons: the outer layer
+   rotates, the inner layer counter-rotates so content stays upright. Static
+   base rotations are set inline, so with reduced motion (animation off) the
+   chips still sit evenly spaced on the ring. */
+@keyframes login-orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes login-orbit-counter {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+.login-orbit {
+  animation: login-orbit-spin 45s linear infinite;
+}
+.login-orbit-counter {
+  animation: login-orbit-counter 45s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-map-sheen,
+  .login-dots-anim,
+  .login-orbit,
+  .login-orbit-counter { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Older-browser fallbacks (the "Tailwind v4 fallback" layer).
+   Tailwind v4 leans on color-mix() and :has(); on browsers without them
+   (Chrome <111 / Safari <16.2 for color-mix; Chrome <105 for :has) the
+   affected declarations are silently dropped, focus rings, tinted
+   surfaces and overlays vanish. These supply solid fallbacks.
+   ═════════════════════════════════════════════════════════════════════ */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  * {
+    outline-color: var(--ring);
+  }
+  :focus-visible {
+    --tw-ring-color: var(--ring);
+  }
+  [aria-invalid="true"] {
+    --tw-ring-color: var(--destructive);
+    border-color: var(--destructive);
+  }
+  [data-slot="sheet-overlay"],
+  [data-slot="dialog-overlay"] {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  [data-slot="button"]:hover {
+    opacity: 0.9;
+  }
+  [data-sidebar="group-label"] {
+    color: var(--sidebar-foreground);
+    opacity: 0.7;
+  }
+  /*
+   * A destructive alert is the worst place for the tint to collapse.
+   *
+   * `bg-destructive/10` is the app's destructive surface everywhere, and without color-mix() it
+   * falls back to SOLID destructive, red text on a red block, which is the one message on the
+   * page that has to be readable. A flat pale wash instead, in both themes.
+   */
+  [data-slot="alert"].bg-destructive\/10 {
+    background-color: #fdeaea;
+    border-color: #f3c4c4;
+  }
+  .dark [data-slot="alert"].bg-destructive\/10 {
+    background-color: #3a1a1a;
+    border-color: #5a2626;
+  }
+}
+
+@supports not selector(:has(*)) {
+  [data-slot="button"] > svg:first-child:last-child {
+    margin-inline: -0.25rem;
+  }
+  [data-sidebar="menu-button"] {
+    padding-right: calc(var(--spacing, 0.25rem) * 8);
+  }
+}
+
+/* Hide scrollbars where we manage our own scroll affordances. */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Slim themed scrollbar for scroll regions inside dialogs/panels, plain CSS overflow
+   (never Radix ScrollArea for these: its percentage-height viewport silently stops
+   scrolling inside max-height parents). scrollbar-width/color cover Chrome 121+ and
+   Firefox; the -webkit rules cover older Chromium and Safari. */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.scrollbar-slim::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 8px;
+}
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ── Screensaver animations (src/components/screensaver.tsx) ──────────── */
+@keyframes screensaverDrift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(8vw, -5vh); }
+  50% { transform: translate(-6vw, 6vh); }
+  75% { transform: translate(5vw, 5vh); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes screensaverColon {
+  0%, 49% { opacity: 0.7; }
+  50%, 100% { opacity: 0.15; }
+}
+.animate-screensaver-drift {
+  animation: screensaverDrift 60s ease-in-out infinite;
+  will-change: transform;
+}
+.animate-screensaver-colon {
+  animation: screensaverColon 1s steps(2, jump-none) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-screensaver-drift,
+  .animate-screensaver-colon {
+    animation: none;
+  }
+}
+
+/* ── Agent "thinking" shimmer ────────────────────────────────────────────
+   A light sweep travelling across the status label while an agent streams.
+   Two-tone: the base is muted, the sweep is full foreground, so it reads as
+   activity without the jitter of a pulsing opacity. */
+@keyframes cr-text-shimmer {
+  0% { background-position: 150% center; }
+  100% { background-position: -50% center; }
+}
+.cr-text-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    var(--muted-foreground) 40%,
+    var(--foreground) 50%,
+    var(--muted-foreground) 60%
+  );
+  background-size: 250% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: cr-text-shimmer 2.2s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-text-shimmer {
+    animation: none;
+    background-image: none;
+    color: var(--muted-foreground);
+  }
+}
+
+/* ── Analytics chat "sketching a chart" wait state ──────────────────────
+   Bars breathing up and down while the SQL pipeline runs (10-30s). Each bar
+   carries its own animation-delay inline, so the row reads as a living chart
+   being drafted rather than a synchronized pulse. Height animates via
+   scaleY from a bottom origin, the way a real bar chart draws. */
+@keyframes cr-bar-wave {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+.cr-bar-wave {
+  transform-origin: bottom;
+  animation: cr-bar-wave 2.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-bar-wave {
+    animation: none;
+    transform: scaleY(0.7);
+  }
+}
+
+/* ── Custom toasts (sonner) ────────────────────────────────────────────── */
+
+/* The neutral toast: an untyped `toast("…")`, and `loading`, which has no
+   verdict to colour yet.
+
+   In `@layer base` on purpose. A toast's tone is a utility class (`bg-emerald-100`)
+   and utilities sit in a LATER layer, so they beat anything here no matter how
+   the specificity works out. That is the whole point, because of the bug this
+   replaces, worth recording so it is not reintroduced:
+
+   sonner joins class names with a plain `join(' ')`, NOT tailwind-merge, and it
+   applies `classNames.default` to EVERY toast before the per-type one. So a
+   success toast really carried both `bg-popover` and `bg-emerald-100`, and with
+   no merge to drop the loser the winner came down to the order Tailwind emitted
+   the two rules, not the order in the class attribute. `.bg-popover` is emitted
+   last, so the tone lost. In dark mode `dark:` adds a second class to the
+   selector, which outranked it and looked right, which is exactly why this
+   surfaced as "light mode only".
+
+   So the neutral case lives here rather than being passed as `classNames.default`,
+   and only one tone utility is ever on the element. Note this must NOT be written
+   unlayered: unlayered CSS outranks every layer, which would put us straight back
+   to the neutral always winning.
+
+   The tones stay as classes in sonner.tsx, where they share StatusBadge's
+   vocabulary and where Tailwind can see them. Written here as
+   `var(--color-emerald-200)` they would be dropped by theme tree-shaking the
+   moment no class used that shade, which is exactly the case for four of them. */
+@layer base {
+  .toast-with-progress {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    border-color: var(--border);
+  }
+}
+
+@keyframes progress-bar {
+  0% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+@keyframes toast-in {
+  0% { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* A quick settle, not the bouncing overshoot this used to do. A clinician sees
+   this forty times a day; it should confirm and get out of the way. */
+[data-sonner-toaster] [data-sonner-toast].toast-with-progress[data-mounted="true"] {
+  animation: toast-in 0.18s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster] [data-sonner-toast].toast-with-progress[data-mounted="true"] {
+    animation: none;
+  }
+}
+
+/* Draining bar at the bottom edge.
+
+   `currentColor` rather than a per-variant gradient: the bar is the toast's own
+   text colour, so a new tone needs no second colour decision and can never
+   disagree with the one above it. Animated with transform, not width, so it
+   runs on the compositor. */
+.toast-with-progress::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform-origin: left;
+  background: currentColor;
+  opacity: 0.55;
+  animation: progress-bar var(--toast-duration, 4500ms) linear forwards;
+  z-index: 10;
+}
+/* Sonner pauses its dismiss timer while the toaster is hovered. Without this the
+   bar drained anyway, so stopping to read a long message left an empty bar over a
+   toast that was not going anywhere. */
+[data-sonner-toaster]:hover .toast-with-progress::after {
+  animation-play-state: paused;
+}
+/* A loading toast has no known end, so it gets no bar to drain. */
+.toast-loading::after {
+  animation: none;
+  opacity: 0.2;
+}
+.toast-loading [data-icon] {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Let the message wrap to full text instead of being clipped. */
+.toast-with-progress [data-content] {
+  min-width: 0;
+  flex: 1;
+}
+.toast-with-progress [data-title] {
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Close button: a flat, subtly-tinted rounded square that blends into the toast,
+   flex-centred on the right edge. No shadow/circle, the drop shadow was what
+   made it look pushed toward the top. */
+.toast-with-progress [data-close-button] {
+  position: absolute !important;
+  top: 50% !important;
+  right: 0.5rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  line-height: 0;
+  width: 24px;
+  height: 24px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: none;
+  border-radius: 6px;
+  /* Tinted with the toast's own colour, so the ✕ and its backing match each
+     tone. rgba fallback first for browsers without color-mix(). */
+  background: rgba(120, 120, 120, 0.14);
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  color: currentColor;
+  cursor: pointer;
+  opacity: 1;
+  transition: background-color 0.15s;
+}
+.toast-with-progress [data-close-button]:hover {
+  background: rgba(120, 120, 120, 0.3);
+  background: color-mix(in srgb, currentColor 28%, transparent);
+}
+.toast-with-progress [data-close-button] svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+/* ── Sidebar menu styles ──────────────────────────────────────────────────
+   Which treatment the CURRENT page gets in the sidebar. Set as `data-menu-style`
+   on <html> by CustomThemeProvider (and pre-paint by the root layout script).
+
+   Everything below is expressed in `--sidebar-*` tokens only, so one choice
+   holds across every predefined and custom theme rather than having to be
+   re-picked per theme.
+
+   Why this lives here and not in `components/ui/sidebar.tsx`: that file is
+   generated by the shadcn CLI and is not hand-edited, and its cva string already
+   hardcodes `data-active:bg-sidebar-accent`. An attribute selector on the root
+   beats a single class, so these override cleanly without touching it.
+
+   The default was the accent fill, the SAME colour as hover. The page you were
+   on and the row under the pointer were indistinguishable, which is the one thing
+   a sidebar has to get right. */
+
+/* Shared: the active row never keeps the accent fill it was given. */
+[data-menu-style] [data-sidebar="menu-button"][data-active="true"],
+[data-menu-style] [data-sidebar="menu-sub-button"][data-active="true"] {
+  position: relative;
+  background-color: transparent;
+}
+
+/* ── Primary: filled with the theme's primary. The default. ── */
+[data-menu-style="primary"] [data-sidebar="menu-button"][data-active="true"],
+[data-menu-style="primary"] [data-sidebar="menu-sub-button"][data-active="true"] {
+  background-color: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
+  font-weight: 500;
+}
+[data-menu-style="primary"] [data-sidebar="menu-button"][data-active="true"] svg,
+[data-menu-style="primary"] [data-sidebar="menu-sub-button"][data-active="true"] svg {
+  color: var(--sidebar-primary-foreground);
+}
+/* Hover must not repaint the active row back to the accent colour. */
+[data-menu-style="primary"] [data-sidebar="menu-button"][data-active="true"]:hover,
+[data-menu-style="primary"] [data-sidebar="menu-sub-button"][data-active="true"]:hover {
+  background-color: var(--sidebar-primary);
+  color: var(--sidebar-primary-foreground);
+}
+
+/* ── Accent Bold: quiet fill, bold label, primary bar down the left edge. ── */
+[data-menu-style="accent-bold"] [data-sidebar="menu-button"][data-active="true"],
+[data-menu-style="accent-bold"] [data-sidebar="menu-sub-button"][data-active="true"] {
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+  font-weight: 700;
+}
+[data-menu-style="accent-bold"] [data-sidebar="menu-button"][data-active="true"]::before,
+[data-menu-style="accent-bold"] [data-sidebar="menu-sub-button"][data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--sidebar-primary);
+}
+/* The rail is the marker when the rail is all there is room for. */
+[data-menu-style="accent-bold"] [data-sidebar="menu-button"][data-active="true"] svg,
+[data-menu-style="accent-bold"] [data-sidebar="menu-sub-button"][data-active="true"] svg {
+  color: var(--sidebar-primary);
+}
+
+/* ── Solid / Inverted: the sidebar's own text colour becomes the background. ── */
+[data-menu-style="solid"] [data-sidebar="menu-button"][data-active="true"],
+[data-menu-style="solid"] [data-sidebar="menu-sub-button"][data-active="true"] {
+  background-color: var(--sidebar-foreground);
+  color: var(--sidebar);
+  font-weight: 600;
+}
+[data-menu-style="solid"] [data-sidebar="menu-button"][data-active="true"] svg,
+[data-menu-style="solid"] [data-sidebar="menu-sub-button"][data-active="true"] svg {
+  color: var(--sidebar);
+}
+[data-menu-style="solid"] [data-sidebar="menu-button"][data-active="true"]:hover,
+[data-menu-style="solid"] [data-sidebar="menu-sub-button"][data-active="true"]:hover {
+  background-color: var(--sidebar-foreground);
+  color: var(--sidebar);
+}
+
+/*
+ * While the sidebar is being dragged, it belongs to the finger and not to CSS.
+ *
+ * The sheet carries `transition duration-200` and an enter animation. During a drag every frame
+ * would be chasing that ease, so the panel lags behind the thumb and the gesture feels like it is
+ * reporting to something rather than attached to it. `EdgeSwipeSidebar` sets this attribute for the
+ * duration and removes it on release, at which point the same transition animates the settle.
+ */
+[data-dragging] {
+  transition: none !important;
+  animation: none !important;
+}
+
+/*
+ * The settle, and the reason the sheet used to flash white as it landed.
+ *
+ * Removing `data-dragging` at release put `animation` back, and re-enabling an animation on an
+ * element restarts it, so the sheet replayed its whole 200ms `animate-in` from opacity 0 and -40px
+ * the instant the finger left the glass. This keeps the ENTER animation off for as long as the
+ * sheet stays open while letting its transition animate the last stretch. It is scoped to
+ * `[data-state=open]`, so the exit animation is untouched: close it later by any other means and it
+ * slides out normally.
+ */
+[data-settling][data-state="open"] {
+  animation: none !important;
+}
+
+
+/* SETU domain tokens (triage / referral status) on top of the Chikitsa-Raj default theme. */
+:root {
+  --triage-red: #c62828;
+  --triage-yellow: #b7791f;
+  --triage-green: #2e7d32;
+  --triage-black: #1f2937;
+  --status-pending: #b45309;
+  --status-accepted: #1e40af;
+  --status-ready: #0e7490;
+  --status-transit: #4338ca;
+  --status-completed: #2e7d32;
+  --status-rejected: #c62828;
+  --status-transferred: #6d28d9;
+  --status-muted: #eef2f8;
+  --warning: #b45309;
+  --warning-muted: #fffbeb;
+  --success: #15803d;
+  --success-muted: #f0fdf4;
+  --destructive-muted: #fef2f2;
+  --triage-red-muted: #fef2f2;
+  --triage-yellow-muted: #fffbeb;
+  --triage-green-muted: #f0fdf4;
+  --triage-black-muted: #f3f4f6;
+}
+.dark {
+  --triage-red: #ef5350;
+  --triage-yellow: #f2c14e;
+  --triage-green: #66bb6a;
+  --triage-black: #cbd5e1;
+  --status-pending: #f0a24a;
+  --status-accepted: #7ea6f5;
+  --status-ready: #22b3cf;
+  --status-transit: #9ea4f7;
+  --status-completed: #66bb6a;
+  --status-rejected: #ef5350;
+  --status-transferred: #b39cf7;
+  --status-muted: #16213a;
+  --warning: #f59e0b;
+  --warning-muted: #2a1f08;
+  --success: #4ade80;
+  --success-muted: #082916;
+  --destructive-muted: #2c1212;
+  --triage-red-muted: #2c1212;
+  --triage-yellow-muted: #2a1f08;
+  --triage-green-muted: #082916;
+  --triage-black-muted: #1f2937;
+}
+
+/* Print: only the referral receipt. */
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; inset: 0; padding: 24px; }
+}
+
+/* New-referral alert ticker: the track holds two copies and slides by one copy's width. */
+@keyframes setu-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes setu-ring {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-14deg); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(4deg); }
+}
+.setu-marquee-track {
+  animation: setu-marquee linear infinite;
+}
+.setu-marquee:hover .setu-marquee-track,
+.setu-marquee:focus-within .setu-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .setu-marquee-track { animation: none; }
+}
+
+/* Public Form A backdrop: the login page's top glow, plus a faint wash down the page, and its
+   dotted pattern thinning towards the bottom so the form stays the brightest thing on screen. */
+.public-backdrop {
+  background-image:
+    radial-gradient(60% 55% at 12% 0%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 65%),
+    radial-gradient(50% 45% at 88% 0%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 65%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--primary) 3%, transparent), transparent 55%, color-mix(in srgb, var(--primary) 2.5%, transparent));
+}
+.public-dots-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.25) 100%);
+  mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.25) 100%);
+}
+
+/* Tailwind v4 leaves buttons with the default arrow; anything clickable shows the hand. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [role="option"],
+  [role="menuitem"],
+  [role="tab"],
+  select,
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+}

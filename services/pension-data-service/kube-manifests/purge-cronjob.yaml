@@ -1,0 +1,36 @@
+# Deletes staged import rows older than IMPORT_STAGE_RETENTION_DAYS and cancels stale unconfirmed
+# batches (docs/SECURITY.md S-RET-1). Daily 02:30 IST (21:00 UTC).
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pension-data-service-purge
+  namespace: hiv-pension
+spec:
+  schedule: "0 21 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+          containers:
+            - name: purge
+              image: REGISTRY/pension-data-service:TAG
+              command: ["node", "dist/dev/purge-staged.js"]
+              envFrom:
+                - secretRef: { name: pension-common }
+                - secretRef: { name: pension-data }
+              env:
+                - { name: NODE_ENV, value: "production" }
+              resources:
+                requests: { cpu: 50m, memory: 128Mi }
+                limits: { cpu: 300m, memory: 256Mi }
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: ["ALL"] }

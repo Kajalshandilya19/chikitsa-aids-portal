@@ -1,0 +1,36 @@
+# RBAC catalogue + role templates, districts, and (only when no Center exists) the placeholder Centers.
+# Run after the auth migration Job on EVERY release: it is idempotent and keeps the permission
+# catalogue in line with the code. Dev users are never created outside APP_ENV=local.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pension-auth-service-seed
+  namespace: hiv-pension
+  labels: { app: pension-auth-service, component: seed }
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 1
+  template:
+    metadata:
+      labels: { app: pension-auth-service, component: seed }
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext: { runAsNonRoot: true, runAsUser: 1000 }
+      containers:
+        - name: seed
+          image: REGISTRY/pension-auth-service:TAG
+          command: ["node", "dist/dev/seed.js"]
+          envFrom:
+            - secretRef: { name: pension-common }
+            - secretRef: { name: pension-auth }
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: DB_ALLOW_MIGRATIONS, value: "true" }
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
